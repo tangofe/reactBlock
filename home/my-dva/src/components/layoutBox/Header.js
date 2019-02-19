@@ -16,6 +16,7 @@ class HeaderDemo extends React.Component {
    collapsed: false,
     bgColor:  '#404040',
     color: '#fff',
+    loginModal:false,
  };
    toggle = () => {
      this.setState({
@@ -44,12 +45,15 @@ class HeaderDemo extends React.Component {
       <Breadcrumb.Item style={{color:this.state.color}}>study</Breadcrumb.Item></div>:'kongde ');
     console.log(bread);*/
   }
+  handleLogin = ()=>{
+    this.props.handleLogin()
+  }
   render () {
     //console.log(this.props.params);
     //console.log(this.props.id);
 
     return (
-      <Header style={{ background: this.state.bgColor , paddingLeft: '10px',paddingRight:'10px', borderBottom:'1px solid #404040'}}>
+      <Header style={{ background: this.state.bgColor ,paddingRight:'10px', borderBottom:'1px solid #404040',paddingLeft: this.state.collapsed?'64px':'200px' }}>
       <Icon
            className="trigger"
            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
@@ -62,9 +66,10 @@ class HeaderDemo extends React.Component {
               color: this.state.color,
               }}
          />
+      <div style={{float:'left',color:this.state.color,marginLeft:'20px'}} onClick={()=>this.handleLogin()}><a>{this.props.loginStatus?'退出':'登录'}</a></div>
       <div className="head" style={{float:'right',color:this.state.color}}>dark</div>
       <Switch defaultChecked={false} onChange={this.onChange.bind(this)} size='small' style={{float:'right',marginTop:'26px',marginRight:'5px'}}/>
-        <Link style={{float:'right',marginRight:'16px',fontSize:'14px'}} to={"/writeBlock/0"}>写博客</Link>
+        { this.props.loginStatus?<Link style={{float:'right',marginRight:'16px',fontSize:'14px'}} to={"/writeBlock/0"}>写博客</Link>:''}
       </Header>
     )
   }

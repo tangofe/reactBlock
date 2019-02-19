@@ -6,6 +6,7 @@ export default {
   namespace: 'article',
   state: {
     getArticleList: {},
+    activeKey:'99'
   },
   reducers: {
     save(state, {payload}) {
@@ -25,7 +26,7 @@ export default {
           //console.log(data);
 
               //message.info(data.info);
-              yield put({type: 'save', payload: {getArticleList: data.data}})
+              yield put({type: 'save', payload: {getArticleList: data.data,activeKey:id}})
 
 
         } catch(error) {
@@ -45,6 +46,20 @@ export default {
         } catch(error) {
           message.error(error);
         }
+      },
+    *changeKey({payload}, { call, put }) {
+      const { id,fid } =  payload ;
+      try {
+        //const {data} = yield call(delArticle, { id});
+        //console.log(data);
+
+        //message.info(data.info);
+        yield put({type: 'save', payload: {activeKey: id}})
+
+
+      } catch(error) {
+        message.error(error);
       }
+    }
   }
 }

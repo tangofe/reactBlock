@@ -33,8 +33,10 @@ class Home extends  Component {
   }
   render(){
     return (
-      <div style={{height:'1600px'}}>
-        Home内容来了
+      <div style={{height:'100%'}}>
+       <h1>只是主页，主页主页，但不知道写什么，尴尬~~</h1>
+        <h3>做些自我介绍怎么样？我来自...</h3>
+        <h3>欢迎你来访，大家一起学习共进！比心~</h3>
       </div>
     )
   }

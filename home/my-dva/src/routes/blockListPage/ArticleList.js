@@ -21,6 +21,8 @@ class ArticleList extends  Component {
   componentWillMount() {
     //console.log(this.state.articleList);
     //this.getArticle();
+    const id = this.props.params.id
+    this.props.dispatch({ type: 'article/getArticleList', payload: { id:id } });
   }
   getArticle = ()=>{
     //console.log('aa');
@@ -89,12 +91,17 @@ class ArticleList extends  Component {
     articleList = [];
     if (list) {
       for (let i = 0; i < list.length; i++) {
-        articleList.push(
-          <li key={list[i].id}><Link to={`/article/${list[i].id}`}>{i + 1 + '.' + list[i].title}</Link><span
-            style={{float: 'right', marginRight: '16px', fontSize: '12px', lineHeight: '36px'}}
-            onClick={()=>this.handleDelete(list[i].id)}>删除</span><Link
-            style={{float: 'right', marginRight: '12px', fontSize: '12px', lineHeight: '36px'}}
-            to={`/writeBlock/${list[i].id}`}>编辑</Link></li>);
+        if (this.props.loginStatus) {
+          articleList.push(
+            <li key={list[i].id}><Link to={`/article/${list[i].id}`}>{i + 1 + '.' + list[i].title}</Link><span
+              style={{float: 'right', marginRight: '16px', fontSize: '12px', lineHeight: '36px'}}
+              onClick={()=>this.handleDelete(list[i].id)}>删除</span><Link
+              style={{float: 'right', marginRight: '12px', fontSize: '12px', lineHeight: '36px'}}
+              to={`/writeBlock/${list[i].id}`}>编辑</Link></li>);
+        } else {
+          articleList.push(
+            <li key={list[i].id}><Link to={`/article/${list[i].id}`}>{i + 1 + '.' + list[i].title}</Link></li>);
+        }
       }
     }
     //console.log(articleList);
@@ -110,5 +117,6 @@ class ArticleList extends  Component {
 export default connect((state) => {
   return {
     getArticleList: state.article.getArticleList,
+    loginStatus: state.login.loginStatus,
   }
 })(ArticleList);

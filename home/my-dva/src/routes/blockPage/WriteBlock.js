@@ -4,6 +4,8 @@
 import React, {Component} from 'react'
 import { Form,Input, Button,Select,message } from 'antd';
 import Ueditor from '../Ueditor';
+import style from './writeBlock.less'
+import E from 'wangeditor'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const blockName = [];
@@ -15,6 +17,7 @@ class WriteBlock extends  Component {
       title:'',
       content: '',
       type:'',
+      key:''
     }
   }
   componentWillMount() {
@@ -23,12 +26,24 @@ class WriteBlock extends  Component {
     //console.log(this.props.params.id);
   }
   componentDidMount() {
+    const elem = this.refs.editorElem
+    const editor = new E(elem)
+    //使用 onchange 函数监听内容的变化，并实时更新到 state 中
+    editor.customConfig.onchange = html => {
+      this.setState({
+        content: html
+      })
+    }
+    editor.create()
     if (this.props.params.id!=="0") {
       //console.log(typeof this.props.params.id);
-      this.getData()
+      this.getData(editor)
     }
   }
-  getData = ()=>{
+  componentWillReceiveProps () {
+    this.forceUpdate();
+  }
+  getData = (ed)=>{
     const params= new FormData();
     params.append("id",this.props.params.id);
     fetch("reactBlock/api/getArticle.php",{
@@ -50,8 +65,9 @@ class WriteBlock extends  Component {
         content: json.content,
         type: json.fid,
       })
-      UE.getEditor("content").setContent(json.content);
-      this.props.form.setFieldsValue({"content":json.content});
+      //UE.getEditor("content").setContent(json.content);
+      ed.txt.html(json.content)
+      //this.props.form.setFieldsValue({"content":json.content});
       this.props.form.setFieldsValue({"title":json.title});
       this.props.form.setFieldsValue({"type":json.fid.toString()});
     }).catch((error)=>{
@@ -82,11 +98,16 @@ class WriteBlock extends  Component {
     })
   }
   save = ()=>{
-     const content = UE.getEditor("content").getContent();
+     //const content = UE.getEditor("content").getContent();
+    const content = this.state.content;
+    console.log(content)
      const title = this.props.form.getFieldValue('title');
      const type = this.props.form.getFieldValue('type');
      this.props.form.setFieldsValue({"content":content});
-
+    if (content=='<p><br></p>') {
+      message.error('正文不能为空')
+      return false
+    }
      const params = new FormData();
      params.append("content",content);
      params.append("title",title);
@@ -150,7 +171,7 @@ class WriteBlock extends  Component {
       },
     };
     return (
-      <div style={{height:'1600px'}}>
+      <div style={{height:'1600px'}} key={this.state.key}>
         <Form>
           <FormItem
             {...formItemLayout}
@@ -166,15 +187,13 @@ class WriteBlock extends  Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="正文"
+            label={<span className="beforeRed">正文</span>}
           >
-            {getFieldDecorator('content', {
-              rules: [{
-                required: true, message: '正文不能为空',
-              }],
-            })(
-              <Ueditor  id="content" height="400"  style={ {margin:"0 auto"}} />
-            )}
+
+              <div ref="editorElem" style={{textAlign: 'left'}}>
+              </div>
+
+  {/* <Ueditor  id="content" height="400"  style={ {margin:"0 auto"}} /> */}
             {/*value={formData.content} disabled={!this.props.canEdit}*/}
           </FormItem>
           <FormItem

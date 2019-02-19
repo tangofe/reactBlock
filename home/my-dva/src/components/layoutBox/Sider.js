@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'dva/router';
 import { Layout, Menu, Icon } from 'antd';
-/*import  style from './SideHead.less'*/
+import  style from './SideHead.less'
 import { connect } from "dva";
+import logo from '../../assets/logoBlock.jpg'
 const { Header, Sider, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 //let id = 1;
@@ -10,13 +11,16 @@ class SiderDemo extends React.Component{
   static propTypes = {
     color: React.PropTypes.string,
   };
-
-  state = {
-    id:1,
-   collapsed: false,
-    current: '1',
-    bgColor: '#404040',
- };
+  constructor(props) {
+    super(props);
+    console.log(props)
+    this.state = {
+      id:1,
+      collapsed: false,
+      current: '1',
+      bgColor: '#404040',
+    };
+  }
   handleClick =  (e) =>{
     this.setState({
       current: e.key,
@@ -32,16 +36,18 @@ class SiderDemo extends React.Component{
     //console.log(1);
   }
   render () {
+    //console.log(this.props)
     return (
       <Sider  trigger={null} collapsible collapsed={this.props.collapsed} style={{backgroundColor: this.props.color==='#fff'?'#404040':'#fff',borderRight:'1px solid #404040'}}>
-         <div className="logo" style={{margin:'20px',height:'110px',backgroundColor: this.props.color==='#fff'?'#fff':'#404040',lineHeight:'110px',textAlign: 'center'}}>我是LOGO好吗</div>
-         <Menu theme={this.props.color === '#fff'? 'dark':'light'} mode="inline" defaultSelectedKeys={['1']} selectedKeys={[this.state.current]} onClick={this.handleClick}>
+         <div className="logo" style={{}}>
+           <img src={logo} alt=""/></div>
+         <Menu theme={this.props.color === '#fff'? 'dark':'light'} mode="inline" defaultSelectedKeys={['99']} selectedKeys={[this.props.activeKey]} onClick={this.handleClick}>
 
            <Menu.Item key="99"><Link to="/home">
              <Icon type="home" />
              <span>主页</span></Link>
            </Menu.Item>
-           <SubMenu key="sub1" title={<Link to={"/progress/1"}><Icon type="video-camera" /><span className="nav-text">我的实习</span></Link>} style={{color:this.props.color}} className={this.props.color === '#fff'? 'bgB':'bgW'}>
+          {/* <SubMenu key="sub1" title={<Link><Icon type="video-camera" /><span className="nav-text">我的实习</span></Link>} style={{color:this.props.color}} className={this.props.color === '#fff'? 'bgB':'bgW'}>
              <Menu.Item key="100"><Link to={"/progress/1"}>
                <Icon type="video-camera" />
                <span>实习过程</span></Link>
@@ -50,8 +56,8 @@ class SiderDemo extends React.Component{
                <Icon type="upload" />
                <span >实习问题</span>
              </Menu.Item>
-           </SubMenu>
-           <SubMenu key="sub2" title={<Link to="/feel/1"><Icon type="video-camera" /><span className="nav-text">前端技术</span></Link>} style={{color:this.props.color}} className={this.props.color === '#fff'? 'bgB':'bgW'}>
+           </SubMenu>*/}
+           <SubMenu key="sub2" title={<Link><Icon type="video-camera" /><span className="nav-text">前端技术</span></Link>} style={{color:this.props.color}} className={this.props.color === '#fff'? 'bgB':'bgW'}>
              <Menu.Item key="102"><Link to="/feel/1">
                <Icon type="video-camera" />
                <span>学习感受</span></Link>
@@ -93,5 +99,6 @@ class SiderDemo extends React.Component{
 export default connect((state) => {
   return {
     getArticleList: state.article.getArticleList,
+    activeKey: state.article.activeKey,
   }
 })(SiderDemo);
